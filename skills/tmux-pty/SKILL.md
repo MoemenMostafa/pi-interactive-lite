@@ -1,6 +1,6 @@
 ---
 name: tmux-pty
-description: Drive interactive terminal programs (coding-agent CLIs, auth flows, prompts that need input) through tmux instead of interactive_shell. Use when a command needs a PTY, typed input, or live supervision the plain bash tool can't provide.
+description: Drive interactive terminal programs (coding-agent CLIs, auth flows, prompts that need input) through tmux instead of interactive_shell. Use when a command needs a PTY, typed input, or live supervision the plain bash tool can't provide. Falls back to script/no-agent paths when tmux is missing.
 ---
 
 # tmux as the PTY / interactive-shell replacement
@@ -51,6 +51,17 @@ tmux kill-session -t <name>     # also the clean way to quit a spawned CLI
 - **Long-running server**: spawn detached, poll the pane or a log file; kill when done.
 - **Failure signature**: also grep for `Traceback`, `error`, `refused` while polling —
   silence is not success.
+
+## No tmux on this machine?
+
+- `user_input` still works — it does not use tmux at all.
+- Install tmux once if you can: `sudo apt install -y tmux` (Debian/Ubuntu), `sudo dnf install tmux` (Fedora), `sudo pacman -S tmux` (Arch), `brew install tmux` (macOS).
+- Without tmux, `script` (util-linux, preinstalled) gives a one-shot PTY when a command
+  merely misbehaves on pipes: `script -qec 'CMD [args]' /tmp/out.log`. Output lands in the
+  log; you cannot steer mid-flight — no interactive input is possible.
+- For anything needing real interactive input, say so and ask the user to run it in
+  their own terminal (`konsole`/`kitty -e CMD` or a plain tab); there is no safe
+  agent-driven fallback.
 
 ## Gotchas
 

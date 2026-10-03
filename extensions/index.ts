@@ -6,6 +6,7 @@
  * NOT entered via chat — for secrets prefer telling the user to run `tmux attach`).
  * Uses pi's built-in ctx.ui.input() dialog: one tool, tiny schema (~200 tok/round).
  */
+import { execSync } from "node:child_process";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 
@@ -15,6 +16,23 @@ interface InputParams {
 }
 
 export default function userInputExtension(pi: ExtensionAPI) {
+	// user_input works without tmux; the tmux-pty skill needs it. Warn once per session.
+	let tmuxPresent: boolean;
+	try {
+		execSync("tmux -V", { stdio: "ignore" });
+		tmuxPresent = true;
+	} catch {
+		tmuxPresent = false;
+	}
+	pi.on("session_start", async (_event, ctx: ExtensionContext) => {
+		if (tmuxPresent === false && ctx.hasUI) {
+			ctx.ui.notify(
+				"pi-interactive-lite: tmux not found — the tmux-pty skill needs it " +
+					"(apt/dnf/brew install tmux). Without it, only the user_input tool works.",
+				"warning",
+			);
+		}
+	});
 	pi.registerTool({
 		name: "user_input",
 		label: "User Input",
