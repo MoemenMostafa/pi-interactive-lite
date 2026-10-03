@@ -1,0 +1,35 @@
+{
+  "name": "pi-interactive-lite",
+  "version": "0.1.0",
+  "description": "Lightweight interactive-shell alternative for pi: drive terminal programs (agent CLIs, auth flows, anything needing a PTY) through tmux via plain bash, plus a minimal user_input tool to prompt the user for free-form answers. ~150 tokens/round instead of ~5,000.",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-skill",
+    "tmux",
+    "pty",
+    "interactive",
+    "user-input",
+    "coding-agents"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "extensions",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MoemenMostafa/pi-interactive-lite.git"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/index.ts"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  }
+}
